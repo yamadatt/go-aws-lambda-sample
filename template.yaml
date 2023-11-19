@@ -1,0 +1,44 @@
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  MyFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Runtime: provided.al2
+      CodeUri: ./my-function
+      Handler: bootstrap
+
+  MyFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /my/stack/lambda/${MyFunction}
+      RetentionInDays: 7
+
+  GoOnLambdaIamRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: "sts:AssumeRole"
+      Policies:
+        -
+          PolicyName: "s3_for_go_onlambda"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              -
+                Effect: "Allow"
+                Action: "s3:*"
+                Resource: "*"
+
+Outputs:
+  FunctionName:
+    Description: Created Function Name
+    Value:  !Ref MyFunction
+    Export:
+      Name: !Join [ ":", [ !Ref "AWS::StackName", FunctionName ] ]

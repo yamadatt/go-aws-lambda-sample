@@ -1,0 +1,4 @@
+.idea/
+.aws-sam/
+**/*results.json
+**/bootstrap

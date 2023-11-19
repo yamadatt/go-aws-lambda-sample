@@ -1,0 +1,36 @@
+ignore: 
+  - ".git/"
+  - "transformations.yml" 
+  - ".DS_Store"
+  - ".idea/"
+  - ".tmp/"
+  - "dist/" 
+  - "*results.json"
+  - ".aws-sam/"
+  - "**/bootstrap"
+inputs:
+  - id: AppName # Must be a unique ID. Can be used also as CLI arg
+    text: What is the application name?
+    type: text
+
+transformations:
+  - name: app name dashed
+    type: rename 
+    pattern: my-function
+    replacement: "{{ .AppName }}" # Reference to an input ID; go templates syntax
+    files: ["**"]
+  - name: app name camel case
+    type: rename 
+    pattern: MyFunction
+    replacement: "{{ .AppName | camelcase }}" # Reference to an input ID; go templates syntax
+    files: ["**"]
+  - name: app name dashed
+    type: replace
+    pattern: my-function
+    replacement: "{{ .AppName }}" # Reference to an input ID; go templates syntax
+    files: ["**"]
+  - name: app name camel case
+    type: replace
+    pattern: MyFunction
+    replacement: "{{ .AppName | camelcase }}" # Reference to an input ID; go templates syntax
+    files: ["**"]
